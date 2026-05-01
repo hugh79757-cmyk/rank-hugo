@@ -1,0 +1,50 @@
+baseURL: "https://rank.informationhot.kr/"
+languageCode: "ko"
+title: "자동차 랭킹 분석"
+theme: "blowfish"
+defaultContentLanguage: "ko"
+enableRobotsTXT: true
+pagination:
+  pagerSize: 12
+summaryLength: 150
+
+taxonomies:
+  tag: "tags"
+  category: "categories"
+
+params:
+  colorScheme: "fire"
+  defaultAppearance: "dark"
+  autoSwitchAppearance: false
+  header:
+    disableLanguageSwitcher: true
+    layout: "basic"
+    showTitle: true
+  footer:
+    showCopyright: true
+    showThemeAttribution: false
+    showScrollToTop: true
+  homepage:
+    layout: "page"
+    showRecent: true
+    showRecentItems: 12
+    cardView: false
+  article:
+    showWordCount: false
+    showReadingTime: false
+    showDate: true
+    showAuthor: false
+    showBreadcrumbs: true
+    showTableOfContents: true
+  description: "세그먼트별 잔존가치·유지비·가성비 TOP5 랭킹 분석"
+  mainSections:
+    - "posts"
+
+menus:
+  main:
+    - name: 글목록
+      pageRef: posts
+      weight: 10
+    - name: 검색
+      pageRef: search
+      weight: 20
