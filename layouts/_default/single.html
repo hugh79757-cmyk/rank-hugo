@@ -47,29 +47,44 @@
         {{ partial "series/series.html" . }}
         <div class="article-content max-w-prose mb-20">
           {{ $content := .Content }}
-          {{ $parts := split $content "<h2" }}
-          {{ if gt (len $parts) 1 }}
-            {{ range $i, $part := $parts }}
+          {{ $wordCount := .WordCount }}
+          {{ $section := .Section }}
+          {{ $isHighValue := or (eq $section "cars") (eq $section "finance") }}
+          {{ $maxAds := 2 }}
+          {{ if or (ge $wordCount 800) $isHighValue }}{{ $maxAds = 3 }}{{ end }}
+
+          {{ $h2parts := split $content "<h2" }}
+          {{ if gt (len $h2parts) 1 }}
+            {{ range $i, $part := $h2parts }}
               {{ if eq $i 0 }}
-                {{ $part | safeHTML }}
+                {{ $pParts := split $part "</p>" }}
+                {{ if gt (len $pParts) 1 }}
+                  {{ index $pParts 0 | safeHTML }}</p>
+                  {{ partial "adsense/in-article.html" . }}
+                  {{ range $j, $p := $pParts }}{{ if gt $j 0 }}{{ $p | safeHTML }}</p>{{ end }}{{ end }}
+                {{ else }}
+                  {{ $part | safeHTML }}
+                {{ end }}
               {{ else }}
-                {{ if or (eq $i 2) (eq $i 4) }}
-                  <div class="ad-in-article" style="margin:2em 0;text-align:center;">
-                    <ins class="adsbygoogle"
-                         style="display:block; text-align:center;"
-                         data-ad-layout="in-article"
-                         data-ad-format="fluid"
-                         data-ad-client="ca-pub-6677996696534146"
-                         data-ad-slot="1752949456"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                  </div>
+                {{ if or (eq $i 1) (and (eq $i 3) (ge $maxAds 3)) }}
+                  {{ partial "adsense/in-article.html" . }}
                 {{ end }}
                 {{ printf "<h2%s" $part | safeHTML }}
               {{ end }}
             {{ end }}
           {{ else }}
-            {{ .Content }}
+            {{ $pParts := split $content "</p>" }}
+            {{ if gt (len $pParts) 1 }}
+              {{ index $pParts 0 | safeHTML }}</p>
+              {{ partial "adsense/in-article.html" . }}
+              {{ range $j, $p := $pParts }}{{ if gt $j 0 }}{{ $p | safeHTML }}</p>{{ end }}{{ end }}
+            {{ else }}
+              {{ $content | safeHTML }}
+            {{ end }}
           {{ end }}
+
+          {{ partial "adsense/leaderboard.html" . }}
+
           {{ $defaultReplyByEmail := site.Params.replyByEmail }}
           {{ $replyByEmail := default $defaultReplyByEmail .Params.replyByEmail }}
           {{ if $replyByEmail }}
